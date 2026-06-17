@@ -1,10 +1,10 @@
-<!-- Last synced with README.md: 2026-05-23 -->
+<!-- Last synced with README.md: 2026-06-17 -->
 
 **English** | [中文](README.md)
 
 # oh-story-claudecode
 
-A web novel writing skill pack for Claude Code and OpenClaw. Covers the full pipeline for long-form and short-form Chinese web novels: trend scanning, deconstruction, writing, AI tone removal, and cover generation.
+A web novel writing skill pack for Codex, Claude Code, and OpenClaw. Covers the full pipeline for long-form and short-form Chinese web novels: trend scanning, deconstruction, writing, AI tone removal, and cover generation.
 
 ## Core Approach
 
@@ -75,19 +75,31 @@ flowchart LR
 
 ## Installation
 
-**Option 1** Tell Claude Code / OpenClaw directly:
+### Claude Code / OpenClaw
 
 ```
 Install this skill https://github.com/worldwonderer/oh-story-claudecode
 ```
 
-**Option 2** Command line:
+Or from the command line:
 
 ```bash
 npx skills add worldwonderer/oh-story-claudecode -y -g
 ```
 
 `-g` installs globally (available in every directory); drop `-g` to install only into the current directory. Re-run the same command to update.
+
+### Codex
+
+Codex can recognize this repository as a plugin through the root `.codex-plugin/plugin.json` manifest. The plugin exposes every writing skill under `skills/`.
+
+Recommended flow:
+
+1. Fork or clone this repository.
+2. Install or enable it as a local Codex plugin.
+3. From a writing project root, run `/story-setup` and select the Codex target. Codex project guidance is written to `AGENTS.md`, and project-local skill copies go under `.agents/skills/`.
+
+For local experimentation inside this repository, Codex can already read the root `AGENTS.md` and `skills/`. To add Codex guidance manually to a novel project, copy [`AGENTS.md.example`](AGENTS.md.example) and adjust the project/book placeholders.
 
 > After updating, if a project has already run `/story-setup`, re-run `/story-setup` from the project root to sync hooks / agents / references. Per-version changes are in [CHANGELOG.md](CHANGELOG.md) and [Releases](https://github.com/worldwonderer/oh-story-claudecode/releases).
 
@@ -209,9 +221,11 @@ Writing skills internally coordinate 7 specialized agents:
 
 Agents load writing theory from `references/` on demand (character design, dialogue techniques, twist toolbox, etc. — 100+ methodology files), without reserving context window space.
 
+Codex compatibility: Claude Code custom agents are registered from `.claude/agents/`. In Codex, if equivalent subagent tooling is unavailable, the skills execute the same role prompts in the main session and report solo fallback.
+
 ## Automation Hooks
 
-7 hooks deployed automatically by `/story-setup`:
+For Claude Code / OpenClaw, `/story-setup` deploys 7 automatic hooks:
 
 | Hook | Trigger | Function |
 |:-----|:---------|:---------|
@@ -222,6 +236,8 @@ Agents load writing theory from `references/` on demand (character design, dialo
 | post-compact.sh | After context compaction | Prompt to read progress snapshot for context recovery |
 | validate-story-commit.sh | git commit | Check hardcoded attributes, setting required fields (warning only, non-blocking) |
 | guard-outline-before-prose.sh | Before writing prose (Write/Edit) | Blocks first creation of a chapter/story body when its 细纲/小节大纲 is missing (blocking) — enforces outline-first |
+
+Codex compatibility: these hook scripts still deploy for the Claude target under `.claude/hooks/`. The Codex target does not assume `.claude/settings.local.json` runs automatically; run scripts manually when needed or register them through Codex's current hook configuration.
 
 ## Project File Structure
 

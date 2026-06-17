@@ -19,11 +19,13 @@
 - `.claude/agents/` — 所有 agent 定义
 - `.claude/rules/` — 所有 path-scoped 规则
 - `.claude/skills/story-setup/references/agent-references/` — Agent 参考资料副本
+- `.agents/skills/{story-*}/` — Codex 目标下由 story-setup 管理的项目本地 skill 副本
 
 ### 需合并（不覆盖）
 
 这些文件可能含用户自定义内容：
 - `CLAUDE.md` — 按 marker/section 合并，用户独有 section 保留
+- `AGENTS.md` — Codex 目标下按 marker/section 合并，用户独有 section 保留
 - `.claude/settings.local.json` — hooks 按 command 去重 append，其他配置保留
 
 ### 不碰
@@ -47,7 +49,7 @@
 - `agents_version: 7` → 旧版，需重新部署以获取 Agent 参考文件路径修复
 - `agents_version: 8` → 旧版，需重新部署以获取 hook lib、reference bundle、root-aware hook 与短篇无副作用修复
 - `agents_version: 9` → 旧版，需重新部署以获取新版写作 Agent
-- `agents_version: 10` → 旧版，需重新部署以获取写正文前细纲守卫 hook、长短交错/疏密写作规则与部署后重启提示
+- `agents_version: 10` → 旧版，需重新部署以获取写正文前细纲守卫 hook、长短交错/疏密写作规则、部署后重启提示，以及 Codex 目标、AGENTS.md 和 `.agents/skills/` 支持
 - `agents_version: 11` → 当前版本
 
 ## 版本变更
@@ -120,4 +122,8 @@
 - **新增写正文前流程守卫 hook** `guard-outline-before-prose.sh`（PreToolUse Write/Edit/MultiEdit）：首次创建 `正文/第N章_*.md` 时若缺 `大纲/细纲_第N章.md`、首次创建短篇 `正文.md` 时若缺 `小节大纲.md`，直接阻断（exit 2），强制先搭大纲再写正文。正文已存在（续写/去AI味/改稿）或非正文文件一律放行。
 - **部署后必须新开会话**：custom agents 只在会话启动时注册成 `subagent_type`。`/story-setup` 部署完会留下一次性标记 `.claude/.agents-pending-restart`，session-start.sh 在下个会话确认 agents 已注册并清除标记。部署当前会话内 spawn agent 仍会降级 solo——必须新开 Claude Code 会话。
 - **写作规则补「长短交错 + 疏密分配」**：`format-and-structure.md` 段落节奏不再是「绝不超 60 字」的一刀切，改为短为主、长为点缀 + 疏密有别；`writing-craft.md` 新增「疏密分配（详略不均）」；`anti-ai-writing.md` 长短句交错改为可执行的生成目标；narrative-writer 模板补 Gate D 长短变化与「句式多样性」审查；story-review 段落 gate 由「≤60 字」改为查长短/疏密变化。针对生成内容文学味过重、句式单一、节奏平坦的反馈。
-- 已部署项目重新运行 `/story-setup` 刷新 hooks/agents/references；**部署后新开会话**。
+- 新增 Codex 一等入口：仓库根目录提供 `.codex-plugin/plugin.json` 和 `AGENTS.md`，Codex 可将本仓库作为插件读取 `skills/`。
+- `/story-setup` 新增 `target_cli: codex` 部署语义：Codex 项目写入/合并 `AGENTS.md`，项目本地 skill 副本使用 `.agents/skills/`。
+- Claude Code/OpenClaw 路径保持不变：`CLAUDE.md`、`.claude/hooks/`、`.claude/agents/`、`.claude/rules/` 和 `.claude/settings.local.json` 继续按原策略部署。
+- Codex 目标不声称 `.claude/settings.local.json` hooks 自动生效；hook 脚本仅作为可手动运行的 advisory 工具或由用户按 Codex 当前 hook 能力另行注册。
+- 已部署项目重新运行 `/story-setup` 刷新 hooks/agents/references；Claude Code/OpenClaw 目标**部署后新开会话**。

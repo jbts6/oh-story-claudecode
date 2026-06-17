@@ -142,6 +142,9 @@ done
 for group in 'templates/hooks/' 'templates/rules' 'templates/agents' 'agent-references' 'settings-hooks\.json' 'CLAUDE\.md' '\.story-deployed'; do
   assert_grep "$group" "$SKILL_FILE" "deployment manifest missing asset group: $group"
 done
+assert_grep 'AGENTS\.md' "$SKILL_FILE" "deployment manifest must document Codex AGENTS.md target"
+assert_grep '\.agents/skills' "$SKILL_FILE" "deployment manifest must document Codex .agents/skills target"
+assert_grep 'target_cli=codex|target_cli: codex|Codex' "$SKILL_FILE" "SKILL.md must document Codex target_cli"
 assert_grep 'references_dir' "$SKILL_FILE" "sentinel references_dir must be documented"
 assert_grep 'resolver_strategy' "$SKILL_FILE" "sentinel resolver_strategy must be documented"
 assert_grep 'target_cli' "$SKILL_FILE" "sentinel target_cli must be documented"
@@ -332,6 +335,8 @@ echo "  OK TS9 settings JSON"
 
 # TS10 — Upgrade notes completeness
 assert_grep 'agents_version: 11|`agents_version: 11`|agents_version`.*11' "$UPGRADING_FILE" "UPGRADING.md must document agents_version 11"
+assert_grep 'agents_version: 10|`agents_version: 10`|agents_version`.*10' "$UPGRADING_FILE" "UPGRADING.md must document agents_version 10"
+assert_grep 'Codex|AGENTS\.md|\.agents/skills' "$UPGRADING_FILE" "UPGRADING.md must document Codex adaptation"
 assert_grep '/story-setup' "$UPGRADING_FILE" "UPGRADING.md must tell users to rerun /story-setup"
 assert_grep 'hook.*lib|lib/common\.sh|lib/sentinel\.sh' "$UPGRADING_FILE" "UPGRADING.md must document hook lib repair"
 assert_grep 'reference bundle|Agent Reference|agent-references' "$UPGRADING_FILE" "UPGRADING.md must document reference bundle repair"

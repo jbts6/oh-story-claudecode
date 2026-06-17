@@ -9,6 +9,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.x'
+      - name: Check Codex plugin manifest
+        run: bash scripts/check-codex-plugin.sh
       - name: Run skill static check
         run: bash scripts/static-check.sh
       - name: Check hook-regex sync

@@ -1,0 +1,40 @@
+{
+  "name": "oh-story-claudecode",
+  "version": "0.6.16",
+  "description": "Chinese web-novel writing toolkit for Codex, Claude Code, and OpenClaw.",
+  "author": {
+    "name": "worldwonderer",
+    "url": "https://github.com/worldwonderer"
+  },
+  "homepage": "https://github.com/worldwonderer/oh-story-claudecode",
+  "repository": "https://github.com/worldwonderer/oh-story-claudecode",
+  "license": "MIT",
+  "keywords": [
+    "novel",
+    "web-novel",
+    "writing",
+    "chinese",
+    "codex",
+    "skills"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Oh Story",
+    "shortDescription": "Chinese web-novel writing skills.",
+    "longDescription": "A full pipeline for Chinese web novels: market scanning, story deconstruction, long-form and short-form writing, AI-tone cleanup, review, import, cover generation, and browser-assisted research.",
+    "developerName": "worldwonderer",
+    "category": "Writing",
+    "capabilities": [
+      "Write",
+      "Research",
+      "Review"
+    ],
+    "websiteURL": "https://github.com/worldwonderer/oh-story-claudecode",
+    "defaultPrompt": [
+      "/story 帮我判断下一步该用哪个网文工具",
+      "/story-long-write 帮我开一本长篇网文",
+      "/story-review 审查这章的爽点和一致性"
+    ],
+    "brandColor": "#7C3AED"
+  }
+}

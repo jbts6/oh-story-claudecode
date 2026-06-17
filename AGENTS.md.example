@@ -1,0 +1,49 @@
+# {项目名} — Codex 网文写作项目说明
+
+本项目使用 oh-story-claudecode 写作技能包。Codex 工作时优先遵守本文件，再按需调用对应 skill。
+
+## Skill 路由表
+
+| 需求 | Skill | 说明 |
+|---|---|---|
+| 不确定下一步 | `story` | 根据意图路由到长篇/短篇/拆文/扫榜/审查等工具 |
+| 初始化写作项目 | `story-setup` | 部署项目说明、skills、写作上下文模板 |
+| 写长篇 | `story-long-write` | 大纲、设定、日更正文、修订 |
+| 写短篇 | `story-short-write` | 情绪框架、小节大纲、正文成稿 |
+| 拆长篇 | `story-long-analyze` | 黄金三章、逐章摘要、设定关系、文风 |
+| 拆短篇 | `story-short-analyze` | 故事核、情绪曲线、反转、写作手法 |
+| 扫长篇榜 | `story-long-scan` | 起点/番茄/晋江等长篇市场分析 |
+| 扫短篇榜 | `story-short-scan` | 知乎盐言/番茄短篇等短篇市场分析 |
+| 去 AI 味 | `story-deslop` | 去模板化、去解释腔、重排节奏 |
+| 审查文本 | `story-review` | 多视角审查；无 subagent 时走 solo fallback |
+| 导入已有小说 | `story-import` | 反向解析为可续写项目结构 |
+| 生成封面 | `story-cover` | 根据书名和题材生成封面 |
+| 浏览器采集 | `browser-cdp` | 复用 Chrome 登录态做浏览器自动化 |
+
+## 文件结构
+
+- `拆文库/` — 拆文分析结果
+- `{书名}/正文/` — 长篇正文章节
+- `{书名}/设定/` — 世界观、角色、关系、题材定位
+- `{书名}/大纲/` — 全书大纲、卷纲、细纲
+- `{书名}/追踪/` — 上下文、伏笔、时间线、角色状态
+- `{书名}/对标/` — 对标作品拆文和文风资料
+
+## Codex 兼容规则
+
+- 项目长期规则写在 `AGENTS.md`。
+- 项目本地 skills 放在 `.agents/skills/`。
+- `.claude/agents/` 是 Claude Code custom agent 路径；Codex 不假定它自动生效。
+- `.claude/settings.local.json` 是 Claude Code hook 配置；Codex 不假定这些 hooks 自动运行。
+- 如当前 Codex 环境没有 subagent 工具，按对应角色提示在主会话执行，并在报告中标明 `solo fallback`。
+
+## 写作上下文恢复
+
+如果存在 `{书名}/追踪/上下文.md`，每次继续写作或上下文压缩后优先读取它，再读取最近章节、细纲、伏笔和角色状态。
+
+## 语言与格式
+
+- 默认使用中文。
+- 正文内容不要写解释说明、审查报告或工具日志。
+- 长篇章节先有细纲再写正文。
+- 短篇先有核心框架和小节大纲再写正文。
