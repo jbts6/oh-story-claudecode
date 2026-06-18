@@ -1,0 +1,67 @@
+<!-- CODEGRAPH_START -->
+## CodeGraph
+
+In repositories indexed by CodeGraph (a `.codegraph/` directory exists at the repo root), reach for it BEFORE grep/find or reading files when you need to understand or locate code:
+
+- **MCP tools** (when available): `codegraph_explore` answers most code questions in one call. `codegraph_node` returns one symbol's source + callers, or reads a whole file with line numbers.
+- **Shell** (always works): `codegraph explore "<symbol names or question>"` and `codegraph node <symbol-or-file>` print the same output.
+
+If there is no `.codegraph/` directory, skip CodeGraph entirely.
+<!-- CODEGRAPH_END -->
+
+# oh-story-claudecode — Codex Guidance
+
+This repository packages Chinese web-novel writing skills. Keep Codex compatibility additive: prefer adding adapter files over changing upstream-owned writing theory, Claude Code deployment behavior, README content, or CI.
+
+## Skill Routing
+
+Use these skills when the user invokes the matching command or natural-language intent:
+
+| Command | Skill | Purpose |
+|---|---|---|
+| `/story` `/网文` | `story` | Route fuzzy writing intents to the right tool |
+| `/story-setup-codex` | `story-setup-codex` | Deploy Codex project guidance without Claude hooks |
+| `/story-setup` `/准备写书` | `story-setup-codex` in Codex, `story-setup` in Claude Code/OpenClaw | Initialize writing-project infrastructure for the active CLI |
+| `/story-long-write` `/写长篇` | `story-long-write` | Long-form writing workflow |
+| `/story-short-write` `/写短篇` | `story-short-write` | Short-form writing workflow |
+| `/story-long-analyze` `/长篇拆文` | `story-long-analyze` | Long-form deconstruction |
+| `/story-short-analyze` `/短篇拆文` | `story-short-analyze` | Short-form deconstruction |
+| `/story-long-scan` `/长篇扫榜` | `story-long-scan` | Long-form market scanning |
+| `/story-short-scan` `/短篇扫榜` | `story-short-scan` | Short-form market scanning |
+| `/story-deslop` `/去AI味` | `story-deslop` | Remove AI writing traces |
+| `/story-review` `/审查` | `story-review` | Multi-perspective review or solo fallback |
+| `/story-import` `/导入` | `story-import` | Reverse-import an existing novel |
+| `/story-cover` `/封面` | `story-cover` | Generate cover art |
+| `/browser-cdp` | `browser-cdp` | Browser automation via Chrome CDP |
+
+## Codex Compatibility
+
+- Codex reads durable project guidance from `AGENTS.md`.
+- Codex plugin discovery is provided by `.codex-plugin/plugin.json`, which points at the repository `skills/` directory.
+- The upstream `story-setup` skill is Claude Code/OpenClaw oriented: it deploys `CLAUDE.md`, `.claude/hooks/`, `.claude/rules/`, `.claude/agents/`, and `.claude/settings.local.json`.
+- In Codex, prefer `story-setup-codex` for project initialization. It writes Codex guidance and sentinel metadata, and it does not claim that Claude hooks or custom agents are automatically active.
+- Claude Code custom agents under `.claude/agents/` are not assumed to be available in Codex. If subagent tooling is unavailable, execute the same role prompt in the main session and report solo fallback.
+- Claude Code hook configuration under `.claude/settings.local.json` is not treated as Codex hook configuration unless verified in the active environment.
+
+## Validation
+
+Before PRs that touch the Codex adapter, run:
+
+```bash
+bash scripts/check-codex-plugin.sh
+python3 /Users/admin/.codex/skills/.system/plugin-creator/scripts/validate_plugin.py .
+```
+
+Before PRs that touch upstream skill behavior, also run the upstream checks:
+
+```bash
+bash scripts/static-check.sh
+bash scripts/check-hook-regex-sync.sh
+bash scripts/check-shared-files.sh
+bash scripts/check-story-setup-deployment.sh
+bash scripts/check-python-invocation.sh
+bash scripts/test-charcount-portable.sh
+bash scripts/test-charcount-portable.sh --stub
+```
+
+Keep shared reference files synchronized when editing duplicated writing theory files.
