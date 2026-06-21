@@ -17,6 +17,11 @@ fi
 source "$HOOK_DIR/lib/common.sh"
 source "$HOOK_DIR/lib/sentinel.sh"
 
+# 字节稳定区域：本 hook 经 discover_active_book 处理中文书名/路径。Windows 中文系统若导出
+# GBK 区域设置，locale 敏感操作会按多字节错解 UTF-8。强制 C 区域走字节处理才稳（issue #164
+# 同类）。本 hook 无内嵌 python，可直接 export。
+export LC_ALL=C
+
 ROOT=$(project_root)
 
 # story-setup 部署后的一次性重启确认。custom agents 只在会话启动时被注册成
@@ -50,8 +55,8 @@ if sentinel_exists "$ROOT/.story-deployed"; then
       HAS_CONTENT=true
       ;;
     *)
-      if [ "$AGENTS_VERSION" -lt 12 ]; then
-        OUTPUT+="[WARN] story-setup agents_version=$AGENTS_VERSION 低于 v12。重新运行 /story-setup 刷新 hooks、agents 和 references（部署后需新开会话）。\n\n"
+      if [ "$AGENTS_VERSION" -lt 14 ]; then
+        OUTPUT+="[WARN] story-setup agents_version=$AGENTS_VERSION 低于 v14。重新运行 /story-setup 刷新 hooks、agents 和 references（部署后需新开会话）。\n\n"
         HAS_CONTENT=true
       fi
       ;;
