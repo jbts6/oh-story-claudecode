@@ -4,7 +4,7 @@
 
 # oh-story-claudecode
 
-A web novel writing skill pack for Claude Code and OpenClaw. Covers the full pipeline for long-form and short-form Chinese web novels: trend scanning, deconstruction, writing, AI tone removal, and cover generation.
+A web novel writing skill pack for Claude Code, OpenCode, and OpenClaw. Covers the full pipeline for long-form and short-form Chinese web novels: trend scanning, deconstruction, writing, AI tone removal, and cover generation.
 
 ## Core Approach
 
@@ -18,7 +18,7 @@ Professional authors follow a three-step method:
 
 Built around four pillars: reverse-engineering hits · plot modularization · layered state management · human-AI collaboration.
 
-> Starting in v0.6.17, long-form outlines become richer chapter blueprints (five-stage summary, multi-line plot plan, relationship/order tracking, ending hooks), and prose/review guidance adds tone-aware punctuation to avoid all-period flattening.
+> Starting in v0.6.18, the toolkit fully supports the OpenCode CLI (auto-discovered agents, command and hook adapters) and ships a built-in update reminder; serialized writing adds per-chapter dialogue-voice and style-drift self-checks, and cover generation crop-fills to each platform's exact size (e.g. 番茄 600×800).
 
 ## Pipeline Overview
 
@@ -77,7 +77,7 @@ flowchart LR
 
 ## Installation
 
-**Option 1** Tell Claude Code / OpenClaw directly:
+**Option 1** Tell Claude Code / OpenCode / OpenClaw directly:
 
 ```
 Install this skill https://github.com/worldwonderer/oh-story-claudecode
@@ -92,6 +92,8 @@ npx skills add worldwonderer/oh-story-claudecode -y -g
 `-g` installs globally (available in every directory); drop `-g` to install only into the current directory. Re-run the same command to update.
 
 > After updating, if a project has already run `/story-setup`, re-run `/story-setup` from the project root to sync hooks / agents / references. Per-version changes are in [CHANGELOG.md](CHANGELOG.md) and [Releases](https://github.com/worldwonderer/oh-story-claudecode/releases).
+>
+> **OpenCode users:** After global install, opencode auto-discovers skills from `~/.claude/skills/`; trigger story-setup with natural language on first use (e.g., "use story-setup to deploy the web novel environment"), then **exit and re-enter with `opencode -c`** for slash commands to work. Some hook behaviors differ from Claude Code (session-start / session-end / compact, etc.) — see the OpenCode section in [CONTRIBUTING.md](CONTRIBUTING.md).
 
 > **Multi-agent collaboration needs setup + a fresh session**: the 7 specialist agents (story-architect, narrative-writer, consistency-checker, etc.) are written into your project's `.claude/agents/` by `/story-setup`. Claude Code only registers custom agents **at session start**, so **after `/story-setup` finishes you must open a new Claude Code session** before story-review's multi-perspective review and the agent collaboration in the writing flow take effect; otherwise skills get "subagent_type unavailable" and fall back to solo (single perspective). To check: run `/story-review` in the new session — a header of `Effective Mode: full/lean` means agents registered, `Fallback: ... -> solo` means you're still in the old session.
 
@@ -99,7 +101,7 @@ npx skills add worldwonderer/oh-story-claudecode -y -g
 
 | Skill | Trigger | Description |
 |:------|:--------|:------------|
-| `story-setup` | `/story-setup` | Environment setup — deploys hooks/rules/agents/CLAUDE.md in one click |
+| `story-setup` | `/story-setup` | Environment setup — deploys hooks/rules/agents/CLAUDE.md in one click (safe merge, supports Claude Code / OpenCode) |
 | `story` | `/story` | Toolbox router — routes fuzzy intents to the matching skill |
 | `story-long-write` | `/story-long-write` | Long-form writing — outline building, character design, prose output |
 | `story-long-analyze` | `/story-long-analyze` | Long-form deconstruction — Golden First 3 Chapters, payoff design, pacing analysis |

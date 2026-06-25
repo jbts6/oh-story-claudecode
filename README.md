@@ -2,7 +2,7 @@
 
 # oh-story-claudecode
 
-网文写作 skill 包，覆盖长篇与短篇网络小说的扫榜、拆文、写作、去AI味、封面图全流程。适配 Claude Code、OpenClaw。
+网文写作 skill 包，覆盖长篇与短篇网络小说的扫榜、拆文、写作、去AI味、封面图全流程。适配 Claude Code、OpenCode、OpenClaw。
 
 ## 核心思路
 
@@ -16,7 +16,7 @@
 
 围绕四条线展开：爆款逆向 · 剧情模块化重组 · 上下文状态分层管理 · 人机协同。
 
-> v0.6.17 起，长篇细纲升级为“章节蓝图”（内容概括、多线情节、人物关系/出场顺序、结尾设定），正文写作与审查也加入“语气标点谱系”，避免通篇句号化。
+> v0.6.18 起，全面支持 OpenCode CLI（自动发现 agent、命令与 hook 适配），并内置版本更新提醒；续写新增逐章对话声线与文风漂移自检，封面按平台尺寸（如番茄 600×800）居中裁剪兜底。
 
 ## 流程总览
 
@@ -75,7 +75,7 @@ flowchart LR
 
 ## 安装
 
-**方式一** 直接告诉 Claude Code / OpenClaw：
+**方式一** 直接告诉 Claude Code / OpenCode / OpenClaw：
 
 ```
 安装这个 skill https://github.com/worldwonderer/oh-story-claudecode
@@ -89,6 +89,8 @@ npx skills add worldwonderer/oh-story-claudecode -y -g
 
 `-g` 全局安装，所有目录可用；去掉 `-g` 则只装到当前目录。更新时重新执行同一条命令即可。
 
+> **OpenCode 用户：** 全局安装后 opencode 自动从 `~/.claude/skills/` 发现 skills；首次用自然语言触发 story-setup（如「用 story-setup 部署网文写作环境」），**部署后退出重进 `opencode -c`** 才能用 slash command。部分 hook 行为与 Claude Code 有差异（session-start / session-end / compact 等），详见 [CONTRIBUTING.md](CONTRIBUTING.md) 的 OpenCode 章节。
+>
 > 升级后如果项目里已经跑过 `/story-setup`，建议在项目根重跑一次 `/story-setup`，同步 hooks / agents / references。每版变更见 [CHANGELOG.md](CHANGELOG.md) 与 [Releases](https://github.com/worldwonderer/oh-story-claudecode/releases)。
 
 > **多 agent 协作要先部署再新开会话**：7 个专业 agent（story-architect、narrative-writer、consistency-checker 等）由 `/story-setup` 写入项目 `.claude/agents/`。Claude Code 只在**会话启动时**注册 custom agent，所以 **`/story-setup` 跑完必须新开一个 Claude Code 会话**，story-review 的多视角对抗审查、写作流程里的 agent 协作才会生效；否则 skill 会拿到「subagent_type 不可用」并降级 solo（单视角）。判断是否生效：新会话里跑 `/story-review`，报告头是 `Effective Mode: full/lean` 即注册成功，是 `Fallback: ... -> solo` 说明还在旧会话。
@@ -97,7 +99,7 @@ npx skills add worldwonderer/oh-story-claudecode -y -g
 
 | Skill | 触发 | 说明 |
 |:------|:-----|:-----|
-| `story-setup` | `/story-setup` `/准备写书` | 环境部署 · hooks/rules/agents/CLAUDE.md 一键部署（已有配置安全合并） |
+| `story-setup` | `/story-setup` `/准备写书` | 环境部署 · hooks/rules/agents/CLAUDE.md 一键部署（已有配置安全合并，支持 Claude Code / OpenCode） |
 | `story` | `/story` `/网文` | 工具箱路由 · 模糊意图自动分发到对应 skill |
 | `story-long-write` | `/story-long-write` `/写长篇` | 长篇写作 · 大纲搭建、人物设定、正文输出 |
 | `story-long-analyze` | `/story-long-analyze` | 长篇拆文 · 黄金三章、爽点设计、节奏分析 |
